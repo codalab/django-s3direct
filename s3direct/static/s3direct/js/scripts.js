@@ -170,16 +170,10 @@
         remove.addEventListener('click', removeUpload, false)
         input.addEventListener('change', getUploadURL, false)
     }
-
-    document.addEventListener('DOMContentLoaded', function(e) {
-        ;[].forEach.call(document.querySelectorAll('.s3direct'), addHandlers)
-    })
-
-    document.addEventListener('DOMNodeInserted', function(e){
-        if(e.target.tagName) {
-            var el = e.target.querySelector('.s3direct')
-            if(el) addHandlers(el)
-        }
-    })
-
+    // The container var is needed to convert document.body into a Node, otherwise observer.observe(container, [...]) won't work 
+    var container = document.documentElement || document.body;
+    // Uses Mutation Observer instead of Mutation Event, which has been deprecated
+    const observer = new MutationObserver(function (m) {[].forEach.call(document.querySelectorAll('.s3direct'), addHandlers);});
+    const observer_config = {childList: true, subtree: true};
+    observer.observe(container, observer_config);
 })()
